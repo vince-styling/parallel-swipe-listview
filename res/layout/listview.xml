@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lsvContent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:dividerHeight=".7dp"
+    android:divider="@color/pager_divider"
+    android:overScrollMode="never"
+    android:listSelector="@drawable/listview_selector"/>

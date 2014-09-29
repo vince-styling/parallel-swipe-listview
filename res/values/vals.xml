@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Parallel-Swipe-ListView</string>
+
+    <color name="frag_tab_item_text">#ffffff</color>
+    <dimen name="frag_tab_item_text">16sp</dimen>
+
+    <string name="pager_item_recent">Recent</string>
+    <string name="pager_item_contacts">Contacts</string>
+    <string name="pager_item_directory">Directory</string>
+
+    <color name="pager_divider">#b2b2b2</color>
+
+    <style name="pager_sub_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#7f7f7f</item>
+    </style>
+</resources>
