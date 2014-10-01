@@ -29,9 +29,14 @@ public class ParallelListView extends ListView {
 		for (int index = 0; index < count; index++) {
 			final View child = getChildAt(index);
 
+//			int factor = count - index - 1;
+//			double copies = Math.pow(3, factor);
+//			float startX = (float) (width / copies);
 			float startX = width / count * index;
 			float childLeft = startX * pageOffset;
-//			Log.e("", String.format("index : %d, childLeft : %f, pageOffset : %f", index, childLeft, pageOffset));
+			if (index == 8) {
+				Log.e("", String.format("index : %d, childLeft : %f, pageOffset : %f", index, childLeft, pageOffset));
+			}
 			child.setTranslationX(childLeft);
 //			if (child.getTranslationX() == 0) {
 //				child.setTranslationX(childLeft);

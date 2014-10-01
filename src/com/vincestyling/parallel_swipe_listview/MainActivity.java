@@ -51,27 +51,26 @@ public class MainActivity extends FragmentActivity {
 		viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageScrollStateChanged(int state) {
-				switch (state) {
-					case ViewPager.SCROLL_STATE_DRAGGING:
-						Log.e("", "dragging");
-						break;
-					case ViewPager.SCROLL_STATE_SETTLING:
-						Log.e("", "settling");
-						break;
-					case ViewPager.SCROLL_STATE_IDLE:
-						Log.e("", "idle");
-						break;
-				}
+//				switch (state) {
+//					case ViewPager.SCROLL_STATE_DRAGGING:
+//						Log.e("", "dragging");
+//						break;
+//					case ViewPager.SCROLL_STATE_SETTLING:
+//						Log.e("", "settling");
+//						break;
+//					case ViewPager.SCROLL_STATE_IDLE:
+//						Log.e("", "idle");
+//						break;
+//				}
 				if (state == ViewPager.SCROLL_STATE_IDLE) {
 //					Log.e("", String.format("lastPositionOffset : %f", lastPositionOffset));
-					directionIsIdentify = false;
 					lastPositionOffset = 0;
 				}
 			}
 
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-				Log.e("", String.format("positionOffsetPixels : %d", positionOffsetPixels));
+//				Log.e("", String.format("positionOffsetPixels : %d", positionOffsetPixels));
 				MainActivity.this.onPageScrolled(position, positionOffset);
 			}
 		});
@@ -83,32 +82,18 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private float lastPositionOffset;
-	boolean directionIsIdentify;
-	int manipulatePosition;
-	boolean isForward;
 
 	public void onPageScrolled(int position, float positionOffset) {
+		if (positionOffset == 0 || positionOffset == lastPositionOffset) return;
 		pageIndicator.onPageScrolled(position, positionOffset);
 
 //		Log.e("", String.format("position : %d, positionOffset : %f, direction : %s",
 //				position, positionOffset, positionOffset > lastPositionOffset ? "Forward" : "Backward"));
 
-		if (positionOffset == 0 || positionOffset == lastPositionOffset) return;
-
-		if (positionOffset != 0 && lastPositionOffset != 0) {
-			if (!directionIsIdentify) {
-				isForward = positionOffset > lastPositionOffset;
-				manipulatePosition = position;
-				if (isForward) manipulatePosition++;
-				directionIsIdentify = true;
-			}
-
-			if (isForward) position++;
-			if (position == manipulatePosition) {
-				RecentView frag = (RecentView) adapter.instantiateItem(viewPager, position);
-				frag.onPageScrolled(isForward, positionOffset);
-			}
-		}
+		boolean isForward = positionOffset > lastPositionOffset;
+		if (isForward) position++;
+		RecentView frag = (RecentView) adapter.instantiateItem(viewPager, position);
+		frag.onPageScrolled(isForward, positionOffset);
 
 		lastPositionOffset = positionOffset;
 	}
