@@ -2,12 +2,12 @@ package com.vincestyling.parallel_swipe_listview;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -22,11 +22,11 @@ public class RecentView extends Fragment {
 		return inflater.inflate(R.layout.listview, null);
 	}
 
-	private ListView lsvContent;
+	private ParallelListView lsvContent;
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-		lsvContent = (ListView) view.findViewById(R.id.lsvContent);
+		lsvContent = (ParallelListView) view.findViewById(R.id.lsvContent);
 		initDataset();
 
 		lsvContent.setAdapter(new BaseAdapter() {
@@ -74,6 +74,12 @@ public class RecentView extends Fragment {
 				return convertView;
 			}
 		});
+	}
+
+	public void onPageScrolled(boolean isForward, float pageOffset) {
+		if (lsvContent != null) {
+			lsvContent.onPageScrolled(isForward, pageOffset);
+		}
 	}
 
 	List<Recent> recentList = new ArrayList<Recent>();
