@@ -19,30 +19,22 @@ public class ParallelListView extends ListView {
 		super(context, attrs, defStyle);
 	}
 
-	public void onPageScrolled(boolean isForward, float pageOffset) {
-//		Log.e("", String.format("pageOffset : %f", pageOffset));
+	public void onPageScrolled(boolean isForward, float deltaX) {
+//		Log.e("", String.format("deltaX : %f", deltaX));
 
-		int width = isForward ? getWidth() : -getWidth();
-		if (isForward) pageOffset = 1 - pageOffset;
-
+		final int width = isForward ? getWidth() : -getWidth();
 		final int count = getChildCount();
 		for (int index = 0; index < count; index++) {
 			final View child = getChildAt(index);
 
-//			int factor = count - index - 1;
-//			double copies = Math.pow(3, factor);
-//			float startX = (float) (width / copies);
-			float startX = width / count * index;
-			float childLeft = startX * pageOffset;
-			if (index == 8) {
-				Log.e("", String.format("index : %d, childLeft : %f, pageOffset : %f", index, childLeft, pageOffset));
+			float childLeft = width + deltaX * (count - index);
+			if (isForward) {
+				if (childLeft < 0) childLeft = 0;
+			} else {
+				if (childLeft > 0) childLeft = 0;
 			}
+//			Log.e("", String.format("index : %d, childLeft : %f, deltaX : %f", index, childLeft, deltaX));
 			child.setTranslationX(childLeft);
-//			if (child.getTranslationX() == 0) {
-//				child.setTranslationX(childLeft);
-//			} else {
-//				child.setTranslationX(child.getTranslationX() - childLeft);
-//			}
 //			child.layout(childLeft, child.getTop(),
 //					childLeft + child.getMeasuredWidth(),
 //					child.getTop() + child.getMeasuredHeight());

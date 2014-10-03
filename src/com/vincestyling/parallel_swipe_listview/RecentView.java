@@ -76,9 +76,9 @@ public class RecentView extends Fragment {
 		});
 	}
 
-	public void onPageScrolled(boolean isForward, float pageOffset) {
+	public void onPageScrolled(boolean isForward, float deltaX) {
 		if (lsvContent != null) {
-			lsvContent.onPageScrolled(isForward, pageOffset);
+			lsvContent.onPageScrolled(isForward, deltaX);
 		}
 	}
 

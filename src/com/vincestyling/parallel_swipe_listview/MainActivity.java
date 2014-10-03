@@ -10,11 +10,11 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements TouchDeltaCallback {
 	protected List<FragmentCreator> menuList;
 
 	private FragmentPagerAdapter adapter;
-	private ViewPager viewPager;
+	private SelfViewPager viewPager;
 
 	private TabIndicator pageIndicator;
 
@@ -29,7 +29,8 @@ public class MainActivity extends FragmentActivity {
 		menuList.add(new FragmentCreator(RecentView.class, R.string.pager_item_directory));
 
 
-		viewPager = (ViewPager) findViewById(R.id.mainContent);
+		viewPager = (SelfViewPager) findViewById(R.id.mainContent);
+		viewPager.setTouchDeltaCallback(this);
 
 		adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 			@Override
@@ -51,27 +52,33 @@ public class MainActivity extends FragmentActivity {
 		viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageScrollStateChanged(int state) {
-//				switch (state) {
-//					case ViewPager.SCROLL_STATE_DRAGGING:
-//						Log.e("", "dragging");
-//						break;
-//					case ViewPager.SCROLL_STATE_SETTLING:
-//						Log.e("", "settling");
-//						break;
-//					case ViewPager.SCROLL_STATE_IDLE:
-//						Log.e("", "idle");
-//						break;
-//				}
-				if (state == ViewPager.SCROLL_STATE_IDLE) {
-//					Log.e("", String.format("lastPositionOffset : %f", lastPositionOffset));
-					lastPositionOffset = 0;
+				switch (state) {
+					case ViewPager.SCROLL_STATE_DRAGGING:
+						Log.e("", "dragging");
+						break;
+					case ViewPager.SCROLL_STATE_SETTLING:
+						Log.e("", "settling");
+						break;
+					case ViewPager.SCROLL_STATE_IDLE:
+						Log.e("", "idle");
+						break;
 				}
+//				if (state == ViewPager.SCROLL_STATE_IDLE) {
+//					Log.e("", String.format("lastPositionOffset : %f", lastPositionOffset));
+//					lastPositionOffset = 0;
+//				}
 			}
 
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//				Log.e("", String.format("positionOffsetPixels : %d", positionOffsetPixels));
+				Log.e("", String.format("position : %d, positionOffsetPixels : %d", position, positionOffsetPixels));
 				MainActivity.this.onPageScrolled(position, positionOffset);
+			}
+
+			@Override
+			public void onPageSelected(int position) {
+//				Log.e("", String.format("onPageSelected position : %d", position));
+				mCurrentPosition = position;
 			}
 		});
 		viewPager.setAdapter(adapter);
@@ -81,21 +88,39 @@ public class MainActivity extends FragmentActivity {
 		pageIndicator.setViewPager(viewPager);
 	}
 
-	private float lastPositionOffset;
+	private int mCurrentPosition;
+//	private float lastPositionOffset;
+
+	@Override
+	public void onTouchDeltaX(float deltaX) {
+		int oprPosition = 0;
+		boolean isForward = false;
+		if (deltaX < 0) { // next page
+			oprPosition = mCurrentPosition + 1;
+			if (oprPosition == adapter.getCount()) return;
+			isForward = true;
+		}
+		else if (deltaX > 0) { // previous page
+			if (mCurrentPosition == 0) return;
+			oprPosition = mCurrentPosition - 1;
+		}
+//		Log.e("", String.format("oprPosition : %d, deltaX : %f", oprPosition, deltaX));
+		RecentView frag = (RecentView) adapter.instantiateItem(viewPager, oprPosition);
+		frag.onPageScrolled(isForward, deltaX);
+	}
 
 	public void onPageScrolled(int position, float positionOffset) {
-		if (positionOffset == 0 || positionOffset == lastPositionOffset) return;
+//		if (positionOffset == 0 || positionOffset == lastPositionOffset) return;
 		pageIndicator.onPageScrolled(position, positionOffset);
 
-//		Log.e("", String.format("position : %d, positionOffset : %f, direction : %s",
-//				position, positionOffset, positionOffset > lastPositionOffset ? "Forward" : "Backward"));
+//		Log.e("", String.format("position : %d, positionOffset : %f", position, positionOffset));
 
-		boolean isForward = positionOffset > lastPositionOffset;
-		if (isForward) position++;
-		RecentView frag = (RecentView) adapter.instantiateItem(viewPager, position);
-		frag.onPageScrolled(isForward, positionOffset);
+//		boolean isForward = positionOffset > lastPositionOffset;
+//		if (isForward) position++;
+//		RecentView frag = (RecentView) adapter.instantiateItem(viewPager, position);
+//		frag.onPageScrolled(isForward, positionOffset);
 
-		lastPositionOffset = positionOffset;
+//		lastPositionOffset = positionOffset;
 	}
 
 	private class FragmentCreator {
