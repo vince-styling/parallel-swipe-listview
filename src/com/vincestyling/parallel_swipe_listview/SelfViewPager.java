@@ -15,11 +15,17 @@ public class SelfViewPager extends ViewPager {
 		super(context, attrs);
 	}
 
+	private boolean mIsDisableTouch;
 	private float mLastX;
 	private float mDeltaX;
 
+	public void setIsDisableTouch(boolean isDisableTouch) {
+		mIsDisableTouch = isDisableTouch;
+	}
+
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		if (mIsDisableTouch) return false;
 		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
 			mDeltaX = 0;
 			mLastX = ev.getRawX();
@@ -30,12 +36,13 @@ public class SelfViewPager extends ViewPager {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
-		if (ev.getAction() == MotionEvent.ACTION_MOVE) {
-			float x = ev.getRawX();
-			mDeltaX += x - mLastX;
-//			Log.e("", String.format("This Touch : %f, deltaX : %f", x, mDeltaX));
-			mDeltaCallback.onTouchDeltaX(mDeltaX);
-			mLastX = x;
+		switch (ev.getAction()) {
+			case MotionEvent.ACTION_MOVE:
+				float x = ev.getRawX();
+				mDeltaX += x - mLastX;
+//				Log.e("", String.format("This Touch : %f, deltaX : %f", x, mDeltaX));
+				mDeltaCallback.onTouchDeltaX(mDeltaX);
+				mLastX = x;
 		}
 		return super.onTouchEvent(ev);
 	}
