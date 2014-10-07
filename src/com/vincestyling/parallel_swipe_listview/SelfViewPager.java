@@ -16,8 +16,7 @@ public class SelfViewPager extends ViewPager {
 	}
 
 	private boolean mIsDisableTouch;
-	private float mLastX;
-	private float mDeltaX;
+	private float mLastX, mDeltaX;
 
 	public void setIsDisableTouch(boolean isDisableTouch) {
 		mIsDisableTouch = isDisableTouch;
